@@ -1,0 +1,30 @@
+name: dev
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  deploy:
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04, ubuntu-18.04 ]
+    steps:
+      - name: Extract branch name
+        run: echo "::[set-output name=branch;]$(echo ${{ github.head_ref }}" | sed 's/#/\%23/g;'
+        id: extract_branch
+
+      - name: Download specific branch's installation script and run it
+        run: |
+          wget -q "https://raw.githubusercontent.com/joseantmazonsb/linguard/${{ steps.extract_branch.outputs.branch }}/scripts/install.sh" .
+          chmod +x install.sh
+          sudo ./scripts/install.sh /var/www/linguard "${{ steps.extract_branch.outputs.branch }}"
+
+      - name: Briefly test using uWSGI
+        run: |
+          sudo -u linguard uwsgi --yaml /var/www/linguard/config/uwsgi.sample.yaml &
+          sleep 2s
+          sudo pkill -f uwsgi

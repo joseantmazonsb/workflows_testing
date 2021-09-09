@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Extract branch name
         env: 
-          BRANCH_NAME = ${{ github.ref }}
+          BRANCH_NAME: ${{ github.ref }}
         run: echo "::[set-output name=branch;]$(echo $BRANCH_NAME" | sed 's/#/\%23/g;'
         id: extract_branch
 

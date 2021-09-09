@@ -17,7 +17,7 @@ jobs:
         id: extract_branch
 
       - name: Escape branch name
-        run: echo "##[set-output name=branch;]$(echo ${{ steps.extract_branch.outputs.branch }} | sed 's/#/\%23/g;')"
+        run: echo "##[set-output name=branch;]$(echo "${{ steps.extract_branch.outputs.branch }}" | sed 's/#/\%23/g;')"
         id: escaped_extract_branch
 
       - name: Download specific branch's installation script and run it

@@ -13,11 +13,11 @@ jobs:
         os: [ ubuntu-20.04, ubuntu-18.04 ]
     steps:
       - name: Extract branch name
-        run: echo "::[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - name: Extract branch name
-        run: echo "::[set-output name=branch;]$(echo "${{ steps.extract_branch.outputs.branch }}" | sed 's/#/\%23/g;')
+      - name: Escape branch name
+        run: echo "##[set-output name=branch;]$(echo ${{ steps.extract_branch.outputs.branch }} | sed 's/#/\%23/g;')"
         id: escaped_extract_branch
 
       - name: Download specific branch's installation script and run it
